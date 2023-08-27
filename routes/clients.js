@@ -83,7 +83,10 @@ router.get('/getList', (req, res) => {
     connection.query(query, (err, result) => {
         if (!err) {
             res.status(200).json({
-                result
+                result : result,
+                message : "sucess",
+                code:200,
+                success:true
             })
         } else {
             console.log(err)
@@ -99,7 +102,7 @@ router.get('/decodeToken', (req, res) => {
     res.send({ success: true, user: decoded.user });
 
 })
-router.delete('/deleteClient', (req, res) => {
+router.delete('/', (req, res) => {
     id = req.query.id;
     console.log(req)
     query = "DELETE FROM users WHERE id= ?"

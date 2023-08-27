@@ -4,6 +4,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { response } = require('express');
 require('dotenv').config()
+const multer = require('multer');
+const path = require('path');
 
 router.get('/getList', (req, res) => {
     query = "SELECT * from partners where state = 1"
@@ -46,14 +48,33 @@ router.get('/searchForPartnerById', (req, res) => {
             );
     })
 })
-router.post('/create', (req, res) => {
+
+// Set up storage for uploaded images
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    },
+  });
+// Initialize multer
+const upload = multer({
+    storage: storage,
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB limit
+    },
+  });
+router.post('/create', upload.single('image'),(req, res) => {
     let body = req.body;
+    if (!req.file) {
+        return res.status(400).json({ message: 'No image provided' });
+      }
+      const imagePath = req.file.path;
 
     var query = "INSERT INTO `partners` (`name`, `logo_url`, `phone`, `email`, `website`, `maps`, `about`, `region_id`, `state`) VALUES ?";
     var values = [
         [
             body.name,
-            body.logo_url,
+            imagePath,
             body.phone,
             body.email,
             body.website,
@@ -69,12 +90,13 @@ router.post('/create', (req, res) => {
         res.send({
             code: 200,
             success: true,
-            message: "Partenaire ajouté avec succès."
+            message: "Partenaire ajouté avec succès.",
+            data:values
         });
     });
 });
 
-router.delete('/delete', (req, res) => {
+router.delete('/', (req, res) => {
     const id = req.query.id;
     var query = "DELETE FROM partners WHERE id= ?";
     connection.query(query, [id], (err, result) => {
@@ -87,7 +109,7 @@ router.delete('/delete', (req, res) => {
     })
 })
 
-router.delete('/accept', (req, res) => {
+router.put('/accept', (req, res) => {
     const id = req.query.id;
     var query = "update partners SET state = 1 where id = ?";
     connection.query(query, [id], (err, result) => {
@@ -108,12 +130,6 @@ router.post('/add', (req, res) => {
     if (decoded != null) {
             uid = decoded.id;
         }
-        // res.send({
-        //     token:token,
-        //     decoded:decoded,
-        //     uid :uid
-            
-        // })
 
     var query = "INSERT INTO `users_calandar`( `user_id`, `partner_id`, `date`, `heure`, `more`) VALUES  ?";
     var values = [
