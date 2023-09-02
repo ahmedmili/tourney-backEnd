@@ -17,6 +17,8 @@ router.post('/signup', (req, res) => {
                 var values = [
                     [user.email, user.fullname, user.lastName, user.password]
                 ];
+                console.log(values)
+                console.log(user)
                 connection.query(query, [values], (errr, resultt) => {
                     if (!errr) {
                         // console.log('sucess')
@@ -30,7 +32,7 @@ router.post('/signup', (req, res) => {
                 })
             } else {
                 console.log("email existe")
-                return res.send({ msg: "email already existe" })
+                return res.status(203).send({ message: "email already existe" })
             }
         }
         else {
