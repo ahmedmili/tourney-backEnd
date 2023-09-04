@@ -1,11 +1,7 @@
-const express = require('express');
-const app = express();
-const router = express.Router();
 const nodemailer = require('nodemailer');
 
-
 // Create a function to send an email
-const sendEmail = async () => {
+const sendEmail = async (data) => {
   // Create a Nodemailer transporter using your Gmail account
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -21,10 +17,9 @@ const sendEmail = async () => {
   // Email data
   const mailOptions = {
     from: 'tourney.mailer@gmail.com',
-    // to: 'Samaraouadi1999@gmail.com', // Replace with the recipient's email address
-    to: 'ahmedmili76@gmail.com', // Replace with the recipient's email address
-    subject: 'Test Email',
-    text: 'mailing tzadet lel app :D het fech nest7a99o mailing bech nzidhom'
+    to: data.to,
+    subject: data.subject,
+    text: data.body
   };
 
   // Send the email
@@ -36,15 +31,25 @@ const sendEmail = async () => {
   }
 };
 
-// Define a route to trigger the email sending
-router.get('/send-email', (req, res) => {
-  sendEmail()
-    .then(() => res.send('Email sent!'))
-    .catch((err) => 
-    {
-      console.log(err)
-      res.status(500).send('Error sending email.')
-    });
-});
+// export default sendEmail;
+module.exports = {
+  sendEmail
+}
 
-module.exports = router;
+// Define a route to trigger the email sending
+// router.post('/send-email', (req, res) => {
+//   const body = req.body
+//   const mailInfo = {
+//     to:body.to,
+//     subject:body.subject,
+//     text:body.text,
+//   }
+//   sendEmail(mailInfo)
+//     .then(() => res.send('Email sent!'))
+//     .catch((err) => {
+//       console.log(err)
+//       res.status(500).send('Error sending email.')
+//     });
+// });
+
+// module.exports = router;
