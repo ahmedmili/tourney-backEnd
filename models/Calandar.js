@@ -1,10 +1,10 @@
 
 module.exports = (sequelize, DataTypes) => {
     const Calandar = sequelize.define("Calandar", {
-        id_prog: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
+        // id_prog: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false
+        // },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false

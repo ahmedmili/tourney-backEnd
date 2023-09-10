@@ -155,6 +155,7 @@ const searchForPartnerById = async (req, res) => {
                 id: id,
             },
         }).then((data) => {
+            console.log(data)
             res.status(200).json({
                 success: true,
                 message: 'search success',
@@ -295,9 +296,18 @@ const add = async (req, res) => {
     let body = req.body;
     let uid = null;
     const token = req.headers.authorization;
-    var decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
-    if (decoded != null) {
-        uid = decoded.id;
+    try {
+        var decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+        if (decoded != null) {
+            uid = decoded.id;
+        }
+    } catch (e) {
+        res.status(203).json({
+            status: 203,
+            success: false,
+            message: "unauthorized",
+            data: {}
+        })
     }
     var values =
     {
@@ -325,7 +335,6 @@ const add = async (req, res) => {
             })
         })
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             success: false,
             code: 500,
@@ -345,7 +354,7 @@ const getAgenda = async (req, res) => {
         const Calandar = db.Calandar
         Calandar.findAll({
             where: { user_id: uid },
-            include: [Partner], // Include the Partner model to join the tables
+            include: [users ], // Include the Partner model to join the tables
         })
             .then((results) => {
                 // Process the query results (results will include both UsersCalendar and Partner data)

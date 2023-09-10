@@ -9,9 +9,9 @@ const users = db.users
 
 const loggin = async (req, res) => {
     data = req.body
-    const user = await users.findOne({ whhere: { email: data.email } })
+    const user = await users.findOne({ where: { email: data.email } })
     // console.log("data",data)
-    console.log("user", user)
+    // console.log("user", user)
     if (!user) res.status(203).json({
         success: false,
         status: 203,
@@ -30,7 +30,7 @@ const loggin = async (req, res) => {
             id: user.id,
             lastName: user.lastName,
         }
-        const ACCESS_TOKEN = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '8h' })
+        const ACCESS_TOKEN = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN, { expiresIn: '8h' })
         res.status(200).json(
             {
                 token: ACCESS_TOKEN,
