@@ -25,4 +25,6 @@ app.use('/api/v1/clients', clientRoute)
 app.use('/api/v1/partners', partnersRoute)
 app.use('/api/v1/regions', regionsRoute)
 // app.use('/api/v1/mail', mailingRoute)
+
+
 module.exports = app;

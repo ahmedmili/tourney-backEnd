@@ -3,7 +3,13 @@ const http = require('http');
 const app = require('./index')
 const server = http.createServer(app)
 
-const db = require("./models")
+const db = require("./models");
+const { mailingJob } = require('./service/jobs/scheduler');
+
+
+
+
+// mailingJob()
 db.sequelize.sync({ force: false })
     .then(() => {
         console.log('Database synchronization done!');
